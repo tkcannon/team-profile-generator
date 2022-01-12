@@ -8,15 +8,5 @@ describe('Manager class', () => {
             expect(manager.officeNumber).toBe('999-999-9999');
             expect(manager.role).toBe('manager');
         })
-        it('should throw an error if office number has no argument', () => {
-            const manager = () => new Manager('John', 1, 'someemail@email.com');
-
-            expect(manager).toThrow();
-        })
-        it('should throw an error if number is not a number', () => {
-            const manager = () => new Manager('John', 1, 'somemail@email.com', 'jfadfasf');
-
-            expect(manager).toThrow();
-        })
     })
 })
