@@ -8,7 +8,7 @@ describe('Employee class', () => {
             const employee = new Employee('John', 1, 'someemail@email.com');
 
             expect(employee.name).toEqual('John');
-            expect(employee.id).toEqual('03');
+            expect(employee.id).toEqual(1);
             expect(employee.email).toEqual('someemail@email.com');
         })
         it('should throw an error if no argument provided', () => {
