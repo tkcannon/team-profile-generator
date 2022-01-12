@@ -8,15 +8,5 @@ describe('Engineer class', () => {
             expect(engineer.github).toBe('johnsmith');
             expect(engineer.role).toBe('engineer');
         })
-        it('should throw an error if github number has no argument', () => {
-            const engineer = () => new Engineer('John', 1, 'someemail@email.com');
-
-            expect(engineer).toThrow();
-        })
-        it('should throw an error if github is not a string', () => {
-            const engineer = () => new Engineer('John', 1, 'somemail@email.com', 1111);
-
-            expect(engineer).toThrow();
-        })
     })
 })

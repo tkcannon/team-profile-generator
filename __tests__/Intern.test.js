@@ -8,16 +8,5 @@ describe('Intern class', () => {
             expect(intern.school).toBe('UofU');
             expect(intern.role).toBe('intern');
         })
-        it('should throw an error if school has no argument', () => {
-            const intern = () => new Intern('John', 1, 'someemail@email.com');
-
-            expect(intern).toThrow();
-        })
-        it('should throw an error if school is not a string', () => {
-            const intern = () => new Intern('John', 1, 'somemail@email.com', 1111);
-
-            expect(intern).toThrow();
-
-        })
     })
 })
