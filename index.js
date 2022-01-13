@@ -3,26 +3,13 @@ const Employee = require('./lib/Employee');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
-const { data } = require('browserslist');
-
-// const employee = new Employee ('John', 1, 'something@email.com');
-// const manager = new Manager ('Man', 2, 'anotheremail@email.com', '999-999-9999');
-// const engineer = new Engineer ('Eli', 3, 'emailmail@email.com', 'eliGit');
-// const intern = new Intern ('Ian', 4, 'yetanotheremail@gmail.com', 'UofU');
-// console.log(employee, manager, engineer, intern);
 
 const questions = {
-    employee: [],
-    manager: {},
-    engineer: {},
-    intern: {} 
-}
 
-const qEmployee = [
-    {
+    employee: [{
         type: 'input',
         name: 'name',
-        message: 'Team Manager name',
+        message: 'Employee Name',
         validate: response => {
             if (!response) {
                 console.log('Please enter the Manager\'s name');
@@ -54,114 +41,135 @@ const qEmployee = [
             }
             return true;
         }
-    }]
+    }],
 
-// const managerQuestion =
-// {
-//     type: 'input',
-//     name: 'office_number',
-//     message: 'Email Adress',
-//     validate: response => {
-//         if (!response) {
-//             console.log('Please enter an Email Adress');
-//             return false;
-//         }
-//         return true;
-//     }
-// }
+    manager: {
+        type: 'input',
+        name: 'officeNumber',
+        message: 'Manager\'s Office Number',
+        validate: response => {
+            if (!response) {
+                console.log('Please add an Office Phone Number for the Manager');
+                return false;
+            }
+            return true;
+        }
+    },
 
-// const engineerQuestion =
-// {
-//     type: 'input',
-//     name: 'github',
-//     message: 'GitHub Username',
-//     validate: response => {
-//         if (!response) {
-//             console.log('Please enter GitHub Username');
-//             return false;
-//         }
-//         return true;
-//     }
-// }
+    engineer: {
+        type: 'input',
+        name: 'github',
+        message: 'Engineer\'s GitHub Username',
+        validate: response => {
+            if (!response) {
+                console.log('Please enter the Engineer\'s GitHub Username')
+                return false;
+            }
+            return true;
+        }
+    },
 
-// const internQuestion =
-// {
-//     type: 'input',
-//     name: 'school',
-//     message: 'Intern\'s School',
-//     validate: response => {
-//         if (!response) {
-//             console.log('Please enter the intern\'s school');
-//             return false;
-//         }
-//         return true;
-//     }
-// }
+    intern: {
+        type: 'input',
+        name: 'school',
+        message: 'Intern\'s School',
+        validate: response => {
+            if (!response) {
+                console.log('Please enter the intern\'s school');
+                return false;
+            }
+            return true;
+        }
+    }
+}
 
+let employees = [];
+
+// Add Manager
 function promptForManager() {
-    let data = [];
-    inquirer.prompt(qEmployee)
+    console.log(`
+======================================
+Input Information for the Team Manager
+======================================
+        `)
+    inquirer.prompt(questions.employee)
         .then(response => {
-            data.push(response);
-            inquirer.prompt({
-                type: 'input',
-                name: 'officeNumber',
-                message: 'Manager\'s Office Number',
-                validate: response => {
-                    if (!response) {
-                        console.log('Please add an Office Phone Number for the Manager');
-                        return false;
-                    }
-                    return true;
-                }
-            })
+            let data = response;
+            inquirer.prompt(questions.manager)
                 .then(response => {
-                    data[0].officeNumber = response.officeNumber;
-                    data[0].role = 'manager';
-                    promptForEmployees(data);
+                    data.officeNumber = response.officeNumber;
+                    const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
+                    employees.push(manager);
+                    promptForEmployees();
                 })
         })
 }
 
-function promptForEmployees(data) {
+function promptForEmployees() {
 
     inquirer.prompt([
         {
             type: 'list',
             name: 'continue',
             message: 'What would you like to do?',
-            choices:
-                [
-                    'Add Engineer',
-                    'Add Intern',
-                    'Finish'
-                ]
+            choices: [
+                'Add Engineer',
+                'Add Intern',
+                'Finish'
+            ]
         }
     ])
         .then(response => {
             if (response.continue === 'Add Engineer') {
-                addEngineer(data);
+                addEngineer();
             } else if (response.continue === 'Add Intern') {
-                addIntern(data);
-            } else (finished(data));
+                addIntern();
+            } else (generatePage());
         });
 }
 
-// add engineer
-function addEngineer(data) {
-    //questions 
-    console.log('eng added');
-    promptForEmployees(data);
+// Add Engineer
+function addEngineer() {
+    console.log(`
+========================
+Information For Engineer
+========================
+    `);
+    inquirer.prompt(questions.employee)
+        .then(response => {
+            let data = response;
+            inquirer.prompt(questions.engineer)
+                .then(response => {
+                    data.github = response.github;
+                    const engineer = new Engineer(data.name, data.id, data.email, data.github);
+                    employees.push(engineer);
+                    promptForEmployees();
+                })
+        })
 }
 
-// add intern 
-function addIntern(data) {
-    console.log('intern added');
-    promptForEmployees(data);
+// Add Intern 
+function addIntern() {
+    console.log(`
+========================
+Information For Intern
+========================
+    `);
+    inquirer.prompt(questions.employee)
+        .then(response => {
+            let data = response;
+            inquirer.prompt(questions.intern)
+                .then(response => {
+                    data.school = response.school;
+                    const intern = new Intern(data.name, data.id, data.email, data.school);
+                    employees.push(intern);
+                    promptForEmployees();
+                })
+        })
 }
 
-function finished(data) {
-    console.log('All Done', data);
+function generatePage() {
+    console.log('All Done', employees);
 }
 
 promptForManager();
