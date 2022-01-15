@@ -1,4 +1,5 @@
 function generatePage(employees) {
+    html =
     `<!DOCTYPE html>
     <html lang="en">
     
@@ -22,7 +23,9 @@ function generatePage(employees) {
 </body>
 
 </html>
-    `
+    `;
+    console.log(html);
+    return html;
 }
 
 function generateCards(employees) {

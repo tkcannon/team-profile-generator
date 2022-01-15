@@ -85,32 +85,10 @@ const questions = {
     }
 }
 
-function promptUser(employees) {
-
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'continue',
-            message: 'What would you like to do?',
-            choices: [
-                'Add Engineer',
-                'Add Intern',
-                'Finish'
-            ]
-        }
-    ])
-        .then(response => {
-            if (response.continue === 'Add Engineer') {
-                employees.push(promptForEmployee('Engineer', employees));
-            } else if (response.continue === 'Add Intern') {
-                employees.push(promptForEmployee('Intern', employees));
-            } else { return employees };
-        })
-}
-
-function promptForEmployee(role, employees) {
+const promptForEmployee = (role, employees) => {
     if (!employees) {
         employees = [];
+        console.log("created employees arr");
     }
 
     console.log(`
@@ -121,7 +99,7 @@ Information For ${role}
 
     let employee = {};
 
-    inquirer.prompt(questions.employee)
+    return inquirer.prompt(questions.employee)
         .then(response => {
             employee = response;
             if (role === "Manager") {
@@ -148,9 +126,43 @@ Information For ${role}
         })
         .then(employee => {
             employees.push(employee);
-            promptUser(employees);
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'continue',
+                    message: 'What would you like to do?',
+                    choices: [
+                        'Add Engineer',
+                        'Add Intern',
+                        'Finish'
+                    ]
+                }
+            ])
         })
+        .then(response => {
+            if (response.continue === 'Add Engineer') {
+                return promptForEmployee('Engineer', employees);
+            } else if (response.continue === 'Add Intern') {
+                return promptForEmployee('Intern', employees);
+            } else { return employees };
+        });
 }
 
 
-promptForEmployee('Manager');
+promptForEmployee('Manager')
+    .then(employees => {
+        return generateHtml(employees);
+    })
+    .then(html => {
+        return writeFile(html);
+    })
+    .then(writeFileResponse => {
+        console.log(writeFileResponse);
+        return copyFile();
+    })
+    .then(copyeFileResponse => {
+        console.log(copyeFileResponse);
+    })
+    .catch(err => {
+        console.log(err);
+    });
