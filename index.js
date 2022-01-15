@@ -1,8 +1,9 @@
 const inquirer = require('inquirer');
-const Employee = require('./lib/Employee');
 const Manager = require('./lib/Manager');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
+const generateHtml = require('./src/page-template');
+const { writeFile, copyFile } = require("./utils/generate-site");
 
 const questions = {
 
@@ -105,29 +106,6 @@ Input Information for the Team Manager
         })
 }
 
-function promptForEmployees() {
-
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'continue',
-            message: 'What would you like to do?',
-            choices: [
-                'Add Engineer',
-                'Add Intern',
-                'Finish'
-            ]
-        }
-    ])
-        .then(response => {
-            if (response.continue === 'Add Engineer') {
-                addEngineer();
-            } else if (response.continue === 'Add Intern') {
-                addIntern();
-            } else (generatePage());
-        });
-}
-
 // Add Engineer
 function addEngineer() {
     console.log(`
@@ -168,8 +146,31 @@ Information For Intern
         })
 }
 
-function generatePage() {
-    console.log('All Done', employees);
+function promptForEmployees() {
+
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'continue',
+            message: 'What would you like to do?',
+            choices: [
+                'Add Engineer',
+                'Add Intern',
+                'Finish'
+            ]
+        }
+    ])
+        .then(response => {
+            if (response.continue === 'Add Engineer') {
+                addEngineer();
+            } else if (response.continue === 'Add Intern') {
+                addIntern();
+            } else { return generateHtml(employees) };
+        });
 }
 
-promptForManager();
+
+promptForManager()
+    .then(html => {
+        writeFile(html);
+    })
