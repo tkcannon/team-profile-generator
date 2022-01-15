@@ -84,93 +84,162 @@ const questions = {
     }
 }
 
-let employees = [];
-
 // Add Manager
-function promptForManager() {
+// function promptForManager() {
+//     let employees = [];
+//     let employee = {};
+//     console.log(`
+// ======================================
+// Input Information for the Team Manager
+// ======================================
+//         `);
+//     inquirer.prompt(questions.employee)
+//         .then(response => {
+//             employee = response;
+//             return inquirer.prompt(questions.engineer)
+//         })
+//         .then(response => {
+//             employee.github = response.github;
+//             const engineer = new Engineer(employee.name, employee.id, employee.email, employee.github);
+//             employees.push(engineer);
+//             console.log(employees);
+//             promptForEmployees(employees);
+//         })
+
+// }
+
+// // Add Engineer
+// function addEngineer(employees) {
+//     let employee = {};
+//     console.log(`
+//     ========================
+//     Information For Engineer
+//     ========================
+//     `);
+//     inquirer.prompt(questions.employee)
+//         .then(response => {
+//             employee = response;
+//             return inquirer.prompt(questions.engineer)
+//         })
+//         .then(response => {
+//             employee.github = response.github;
+//             const engineer = new Engineer(employee.name, employee.id, employee.email, employee.github);
+//             employees.push(engineer);
+//             promptForEmployees(employees);
+//         })
+
+// }
+
+// // Add Intern 
+// function addIntern(employees) {
+//     let employee = {};
+//     console.log(`
+// ========================
+// Information For Intern
+// ========================
+//     `);
+//     inquirer.prompt(questions.employee)
+//         .then(response => {
+//             let data = response;
+//             inquirer.prompt(questions.intern)
+//                 .then(response => {
+//                     data.school = response.school;
+//                     const intern = new Intern(data.name, data.id, data.email, data.school);
+//                     employees.push(intern);
+//                     promptForEmployees(employees);
+//                 })
+//         })
+// }
+
+function promptUser(employees) {
+    if (!employees) {
+        promptForEmployee("Manager", employees = []);
+    } else {
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'continue',
+                message: 'What would you like to do?',
+                choices: [
+                    'Add Engineer',
+                    'Add Intern',
+                    'Finish'
+                ]
+            }
+        ])
+            .then(response => {
+                if (response.continue === 'Add Engineer') {
+                    promptForEmployee('Engineer', employees);
+                } else if (response.continue === 'Add Intern') {
+                    promptForEmployee('Intern', employees);
+                } else { return employees };
+            });
+    }
+}
+
+function promptForEmployee(role, employees) {
+
     console.log(`
-======================================
-Input Information for the Team Manager
-======================================
-        `)
+========================
+Information For ${role}
+========================
+    `)
+
+    let employee = {};
+
     inquirer.prompt(questions.employee)
         .then(response => {
-            let data = response;
-            inquirer.prompt(questions.manager)
-                .then(response => {
-                    data.officeNumber = response.officeNumber;
-                    const manager = new Manager(data.name, data.id, data.email, data.officeNumber);
-                    employees.push(manager);
-                    promptForEmployees();
-                })
+            employee = response;
+            if (role === "Manager") {
+                return inquirer.prompt(questions.manager)
+            } else if (role === "Engineer") {
+                return inquirer.prompt(questions.engineer)
+            } else if (role === "Intern") {
+                return inquirer.prompt(questions.intern)
+            } else {
+                console.log(`Role cannot be determined for ${role}`);
+            }
+        })
+        .then(response => {
+            if (role === "Manager") {
+                employee.officeNumber = response.officeNumber;
+                const manager = new Manager(employee.name, employee.id, employee.email, employee.officeNumber);
+                employees.push(manager);
+            } else if (role === "Engineer") {
+                employee.github = response.github;
+                const engineer = new Engineer(employee.name, employee.id, employee.email, employee.github);
+                employees.push(engineer);
+            } else if (role === "Intern") {
+                employee.school = response.school;
+                const intern = new Intern(employee.name, employee.id, employee.email, employee.school);
+                employees.push(intern);
+            }
+            promptUser(employees);
         })
 }
 
-// Add Engineer
-function addEngineer() {
-    console.log(`
-========================
-Information For Engineer
-========================
-    `);
-    inquirer.prompt(questions.employee)
-        .then(response => {
-            let data = response;
-            inquirer.prompt(questions.engineer)
-                .then(response => {
-                    data.github = response.github;
-                    const engineer = new Engineer(data.name, data.id, data.email, data.github);
-                    employees.push(engineer);
-                    promptForEmployees();
-                })
-        })
-}
 
-// Add Intern 
-function addIntern() {
-    console.log(`
-========================
-Information For Intern
-========================
-    `);
-    inquirer.prompt(questions.employee)
-        .then(response => {
-            let data = response;
-            inquirer.prompt(questions.intern)
-                .then(response => {
-                    data.school = response.school;
-                    const intern = new Intern(data.name, data.id, data.email, data.school);
-                    employees.push(intern);
-                    promptForEmployees();
-                })
-        })
-}
-
-function promptForEmployees() {
-
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'continue',
-            message: 'What would you like to do?',
-            choices: [
-                'Add Engineer',
-                'Add Intern',
-                'Finish'
-            ]
-        }
-    ])
-        .then(response => {
-            if (response.continue === 'Add Engineer') {
-                addEngineer();
-            } else if (response.continue === 'Add Intern') {
-                addIntern();
-            } else { return generateHtml(employees) };
-        });
-}
-
-
-promptForManager()
-    .then(html => {
-        writeFile(html);
+// promptForManager()
+//     .then(employees => {
+//         return promptForEmployees(employees);
+//     })
+//     .then(employees => {
+//         return generateHtml(employees);
+//     })
+//     .then(html => {
+//         return writeFile(html);
+//     })
+//     .catch(err => {
+//         console.log(err);
+//     });
+promptUser()
+    .then(employees => {
+        return generateHtml(employees);
     })
+    .then(html => {
+        return writeFile(html);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+    ;

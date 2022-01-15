@@ -59,5 +59,4 @@ function generateCards(employees) {
     return cards;
 }
 
-
 module.exports = generatePage;
