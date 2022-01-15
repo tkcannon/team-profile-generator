@@ -4,6 +4,7 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const generateHtml = require('./src/page-template');
 const { writeFile, copyFile } = require("./utils/generate-site");
+const generatePage = require('./src/page-template');
 
 const questions = {
 
@@ -84,100 +85,33 @@ const questions = {
     }
 }
 
-// Add Manager
-// function promptForManager() {
-//     let employees = [];
-//     let employee = {};
-//     console.log(`
-// ======================================
-// Input Information for the Team Manager
-// ======================================
-//         `);
-//     inquirer.prompt(questions.employee)
-//         .then(response => {
-//             employee = response;
-//             return inquirer.prompt(questions.engineer)
-//         })
-//         .then(response => {
-//             employee.github = response.github;
-//             const engineer = new Engineer(employee.name, employee.id, employee.email, employee.github);
-//             employees.push(engineer);
-//             console.log(employees);
-//             promptForEmployees(employees);
-//         })
-
-// }
-
-// // Add Engineer
-// function addEngineer(employees) {
-//     let employee = {};
-//     console.log(`
-//     ========================
-//     Information For Engineer
-//     ========================
-//     `);
-//     inquirer.prompt(questions.employee)
-//         .then(response => {
-//             employee = response;
-//             return inquirer.prompt(questions.engineer)
-//         })
-//         .then(response => {
-//             employee.github = response.github;
-//             const engineer = new Engineer(employee.name, employee.id, employee.email, employee.github);
-//             employees.push(engineer);
-//             promptForEmployees(employees);
-//         })
-
-// }
-
-// // Add Intern 
-// function addIntern(employees) {
-//     let employee = {};
-//     console.log(`
-// ========================
-// Information For Intern
-// ========================
-//     `);
-//     inquirer.prompt(questions.employee)
-//         .then(response => {
-//             let data = response;
-//             inquirer.prompt(questions.intern)
-//                 .then(response => {
-//                     data.school = response.school;
-//                     const intern = new Intern(data.name, data.id, data.email, data.school);
-//                     employees.push(intern);
-//                     promptForEmployees(employees);
-//                 })
-//         })
-// }
-
 function promptUser(employees) {
-    if (!employees) {
-        promptForEmployee("Manager", employees = []);
-    } else {
-        inquirer.prompt([
-            {
-                type: 'list',
-                name: 'continue',
-                message: 'What would you like to do?',
-                choices: [
-                    'Add Engineer',
-                    'Add Intern',
-                    'Finish'
-                ]
-            }
-        ])
-            .then(response => {
-                if (response.continue === 'Add Engineer') {
-                    promptForEmployee('Engineer', employees);
-                } else if (response.continue === 'Add Intern') {
-                    promptForEmployee('Intern', employees);
-                } else { return employees };
-            });
-    }
+
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'continue',
+            message: 'What would you like to do?',
+            choices: [
+                'Add Engineer',
+                'Add Intern',
+                'Finish'
+            ]
+        }
+    ])
+        .then(response => {
+            if (response.continue === 'Add Engineer') {
+                employees.push(promptForEmployee('Engineer', employees));
+            } else if (response.continue === 'Add Intern') {
+                employees.push(promptForEmployee('Intern', employees));
+            } else { return employees };
+        })
 }
 
 function promptForEmployee(role, employees) {
+    if (!employees) {
+        employees = [];
+    }
 
     console.log(`
 ========================
@@ -203,43 +137,20 @@ Information For ${role}
         .then(response => {
             if (role === "Manager") {
                 employee.officeNumber = response.officeNumber;
-                const manager = new Manager(employee.name, employee.id, employee.email, employee.officeNumber);
-                employees.push(manager);
+                return new Manager(employee.name, employee.id, employee.email, employee.officeNumber);
             } else if (role === "Engineer") {
                 employee.github = response.github;
-                const engineer = new Engineer(employee.name, employee.id, employee.email, employee.github);
-                employees.push(engineer);
+                return new Engineer(employee.name, employee.id, employee.email, employee.github);
             } else if (role === "Intern") {
                 employee.school = response.school;
-                const intern = new Intern(employee.name, employee.id, employee.email, employee.school);
-                employees.push(intern);
+                return new Intern(employee.name, employee.id, employee.email, employee.school);
             }
+        })
+        .then(employee => {
+            employees.push(employee);
             promptUser(employees);
         })
 }
 
 
-// promptForManager()
-//     .then(employees => {
-//         return promptForEmployees(employees);
-//     })
-//     .then(employees => {
-//         return generateHtml(employees);
-//     })
-//     .then(html => {
-//         return writeFile(html);
-//     })
-//     .catch(err => {
-//         console.log(err);
-//     });
-promptUser()
-    .then(employees => {
-        return generateHtml(employees);
-    })
-    .then(html => {
-        return writeFile(html);
-    })
-    .catch(err => {
-        console.log(err);
-    })
-    ;
+promptForEmployee('Manager');
