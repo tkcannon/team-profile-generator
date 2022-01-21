@@ -10,8 +10,6 @@ This application creates a formated team roster using data provided through inqu
 
 Click the gif below for a better resolution video
 
-[![walkthrough](./src/walkthrough.gif)](https://watch.screencastify.com/v/JDQBQIfUssYkyty7A0u9)
+[![walkthrough](./src/assets/walkthrough.gif)](https://watch.screencastify.com/v/JDQBQIfUssYkyty7A0u9)
 
-## Example Page
-
-[Example](https://tkcannon.github.io/team-profile-generator/)
+Here's an example of a generated [Page](https://tkcannon.github.io/team-profile-generator/)
