@@ -33,24 +33,24 @@ function generateCards(employees) {
 
     employees.forEach(employee => {
         var info;
-        if (employee.role === 'manager') {
-            info = `Office number: ${employee.officeNumber}`
-        } else if (employee.role === 'engineer') {
-            info = `GitHub: <a href="https://github.com/${employee.github} target="_blank">${employee.github}</a>`
+        if (employee.getRole() === 'manager') {
+            info = `Office number: ${employee.getOfficeNumber()}`
+        } else if (employee.getRole() === 'engineer') {
+            info = `GitHub: <a href="https://github.com/${employee.getGithub()} target="_blank">${employee.getGithub()}</a>`
         } else {
-            info = `School: ${employee.school}`
+            info = `School: ${employee.getSchool()}`
         }
         card = (
             `
             <div class="card" >
                 <div class="card-head">
-                    <h2>${employee.name}</h2>
-                    <h3>${employee.role}</h3>
+                    <h2>${employee.getName()}</h2>
+                    <h3>${employee.getRole()}</h3>
                 </div>
                 <div class="card-body">
                     <ul>
-                        <li>ID: ${employee.id}</li>
-                        <li>Email: <a href = "mailto: ${employee.email}">${employee.email}</a> </li>
+                        <li>ID: ${employee.getId()}</li>
+                        <li>Email: <a href = "mailto: ${employee.getEmail()}">${employee.getEmail()}</a> </li>
                         <li>${info}</li>
                     </ul>
                 </div>
