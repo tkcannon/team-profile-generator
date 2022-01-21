@@ -36,7 +36,7 @@ function generateCards(employees) {
         if (employee.getRole() === 'manager') {
             info = `Office number: ${employee.getOfficeNumber()}`
         } else if (employee.getRole() === 'engineer') {
-            info = `GitHub: <a href="https://github.com/${employee.getGithub()} target="_blank">${employee.getGithub()}</a>`
+            info = `GitHub: <a href="https://github.com/${employee.getGithub()}" target="_blank">${employee.getGithub()}</a>`
         } else {
             info = `School: ${employee.getSchool()}`
         }
