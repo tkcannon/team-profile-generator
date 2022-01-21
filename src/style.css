@@ -21,14 +21,14 @@ header {
 
 #team {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
-    margin: 0 20%;
+    margin: 0 15vw;
 }
 
 .card {
-    flex: 1;
-    margin: 25px;
+    width: 300px;
+    margin: 20px;
     background-color: #dfdfdf;
     font-size: large;
     box-shadow: 5px 5px 5px grey;

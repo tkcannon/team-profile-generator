@@ -1,6 +1,6 @@
 function generatePage(employees) {
     html =
-    `<!DOCTYPE html>
+        `<!DOCTYPE html>
     <html lang="en">
     
     <head>
@@ -18,17 +18,17 @@ function generatePage(employees) {
 
     <section id="team">
     ${generateCards(employees)}
-    </section>
+    </section >
 
-</body>
+    </body >
 
-</html>
+    </html >
     `;
-    console.log(html);
     return html;
 }
 
 function generateCards(employees) {
+
     let cards = [];
 
     employees.forEach(employee => {
@@ -36,30 +36,31 @@ function generateCards(employees) {
         if (employee.role === 'manager') {
             info = `Office number: ${employee.officeNumber}`
         } else if (employee.role === 'engineer') {
-            info = `GitHub: ${employee.github}`
+            info = `GitHub: <a href="https://github.com/${employee.github} target="_blank">${employee.github}</a>`
         } else {
             info = `School: ${employee.school}`
         }
-        const card =
+        card = (
             `
-        <div class="card">
-            <div class="card-head">
-                <h2>${employee.name}</h2>
-                <h3>${employee.role}</h3>
+            <div class="card" >
+                <div class="card-head">
+                    <h2>${employee.name}</h2>
+                    <h3>${employee.role}</h3>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>ID: ${employee.id}</li>
+                        <li>Email: <a href = "mailto: ${employee.email}">${employee.email}</a> </li>
+                        <li>${info}</li>
+                    </ul>
+                </div>
             </div>
-            <div class="card-body">
-                <ul>
-                    <li>ID: ${employee.id}</li>
-                    <li>Email: ${employee.email}</li>
-                    <li>${info}</li>
-                </ul>
-            </div>
-        </div>
-            `;
+        `);
         cards.push(card);
     });
 
-    return cards;
+    const cardsSection = cards.join('');
+    return cardsSection;
 }
 
 module.exports = generatePage;

@@ -4,7 +4,6 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const generateHtml = require('./src/page-template');
 const { writeFile, copyFile } = require("./utils/generate-site");
-const generatePage = require('./src/page-template');
 
 const questions = {
 
